@@ -1,39 +1,19 @@
-### Olist E-commerce: SQL Data Engineering
+# Olist Logistics ETL (Practice Project)
 
-### Project Objective
-The objective of this project is to transform a raw Brazilian marketplace dataset (CSV) into a structured and optimized SQL database. The primary focus is on data cleaning and the development of logistical metrics, such as delivery lead times, to support data-driven business decisions.
+> **Note:** This is a personal practice project created to learn and demonstrate ETL (Extract, Transform, Load) workflows. It is not intended for commercial use or as a production-ready application.
 
-### Tech Stack
-* **Database:** SQLite
-* **Management Tool:** DBeaver
-* **Language:** SQL (DDL, DQL)
+## Project Overview
+This repository contains a simple ETL pipeline built with Python and Pandas. The goal was to practice data cleaning, date manipulation, and merging multiple datasets using the Olist (Brazilian E-commerce) public data.
 
-### ETL Process (Extract, Transform, Load)
+## ETL Process
+1.  **Extract**: Loaded raw datasets from CSV files (`orders` and `customers`).
+2.  **Transform**: 
+    *   Converted date strings into Python `datetime` objects.
+    *   Calculated delivery timeframes and identified logistical outliers.
+    *   Merged datasets to analyze performance by Brazilian state.
+3.  **Load**: Exported the processed data into `cleaned_olist_delivery_data.csv`.
 
-#### 1. Extraction
-Data was imported from raw CSV files. During the ingestion phase, a data type anomaly was identified: timestamps were imported as `NVARCHAR` (text), which prevented direct temporal mathematical operations.
-
-### 2. Transformation
-This phase represented the core data engineering effort:
-* **Date Standardization:** Converted string-based timestamps into proper `DATE` objects using the `date()` function.
-* **Performance Metrics:** Developed a `delivery_days` metric using `julianday()` to calculate the precise interval between purchase and customer delivery.
-* **Data Quality:** * Identified and removed inconsistent records (orders marked as 'delivered' but lacking a physical delivery date).
-    * Handled missing values by differentiating between `NULL` entries and empty strings (`''`).
-* **Aggregations:** Calculated total revenue by state and unique order counts to identify market leaders.
-
-### 3. Loading
-To automate and streamline access to processed data, a **Database View** named `orders_clean` was implemented. This view allows for direct querying of filtered and calculated data, eliminating the need to rewrite cleaning logic for future analyses.
-
-## Code Structure (SQL View)
-```sql
-CREATE VIEW orders_clean AS
-SELECT 
-    order_id,
-    customer_id,
-    order_status,
-    date(order_purchase_timestamp) AS purchase_date,
-    date(order_delivered_customer_date) AS delivery_date,
-    julianday(order_delivered_customer_date) - julianday(order_purchase_timestamp) AS delivery_days
-FROM olist_orders_dataset
-WHERE order_status = 'delivered' 
-  AND order_delivered_customer_date != '';
+## Learning Objectives
+*   Mastering Pandas `groupby` and `merge` functions.
+*   Handling date/time formats in data engineering.
+*   Documenting a data pipeline for a GitHub portfolio.
